@@ -3,161 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 信用卡權益精算</title>
+    <title>2026 我的錢包儀表板</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px 10px; color: #1c1e21; }
-        .container { max-width: 550px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #1a73e8; margin-bottom: 5px; }
-        .subtitle { text-align: center; color: #5f6368; font-size: 0.85rem; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
-        .form-group { margin-bottom: 18px; }
-        label { display: block; margin-bottom: 6px; font-weight: bold; font-size: 0.95rem; }
-        input, select { width: 100%; padding: 14px; border: 1px solid #dadce0; border-radius: 12px; font-size: 16px; box-sizing: border-box; background: #f8f9fa; }
+        :root {
+            --cube-color: #0087dc; --richart-color: #e11d48;
+            --jiho-color: #4b5563; --linebank-color: #00c300;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif; background-color: #f3f4f6; margin: 0; padding: 20px 10px; color: #1f2937; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 20px; }
         
-        .check-group { display: flex; flex-direction: column; gap: 10px; margin: 15px 0; }
-        .checkbox-wrapper { display: flex; align-items: center; background: #e8f0fe; padding: 12px; border-radius: 12px; border: 1px solid #d2e3fc; cursor: pointer; }
-        .checkbox-wrapper input { width: 22px; height: 22px; margin-right: 12px; }
-        .checkbox-wrapper span { font-size: 0.9rem; color: #1967d2; font-weight: 600; }
+        /* 卡片圖鑑區 - 4張精銳 */
+        .card-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
+        .card-preview { background: white; border-radius: 18px; padding: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; cursor: pointer; transition: 0.2s; border: 1px solid transparent; }
+        .card-preview:hover { transform: translateY(-3px); border-color: #ddd; }
+        .card-preview img { width: 100%; height: 90px; object-fit: contain; background: #f9fafb; border-radius: 12px; margin-bottom: 8px; border: 1px solid #eee; }
+        .card-preview .title { font-weight: bold; font-size: 0.85rem; display: block; margin-bottom: 4px; }
+        .card-preview .memo { font-size: 0.7rem; color: #6b7280; display: block; line-height: 1.3; min-height: 36px; }
 
-        .cube-box { background: #f1f3f4; padding: 18px; border-radius: 15px; border: 1px solid #dee2e6; margin: 20px 0; }
-        .cube-title { color: #1e8e3e; font-weight: bold; font-size: 0.9rem; margin-bottom: 10px; display: block; }
+        /* 計算區 */
+        .main-box { background: white; padding: 25px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; font-weight: bold; font-size: 0.9rem; }
+        input, select { width: 100%; padding: 14px; border: 1px solid #d1d5db; border-radius: 12px; font-size: 16px; box-sizing: border-box; background: #fff; }
+        
+        .plan-select { padding: 12px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid #ccc; background: #f9fafb; }
+        .cube-border { border-left-color: var(--cube-color); }
+        .ts-border { border-left-color: var(--richart-color); }
 
-        button { width: 100%; padding: 16px; background: #1a73e8; color: #fff; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        button:active { transform: scale(0.98); opacity: 0.9; }
+        button { width: 100%; padding: 16px; background: #111827; color: white; border: none; border-radius: 14px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        button:active { transform: scale(0.98); }
 
-        .result-item { display: flex; justify-content: space-between; align-items: center; padding: 18px; border: 1px solid #e8eaed; border-radius: 16px; margin-bottom: 12px; background: #fff; transition: 0.3s; }
-        .result-item.best { border: 2.5px solid #34a853; background: #f6ffed; }
-        .card-name { font-weight: 800; font-size: 1.1rem; margin-bottom: 3px; }
-        .card-note { font-size: 0.8rem; color: #70757a; }
-        .card-val { text-align: right; color: #1a73e8; font-size: 1.5rem; font-weight: 900; }
-        .best .card-val { color: #1e8e3e; }
-        .badge { display: inline-block; font-size: 0.7rem; padding: 2px 8px; border-radius: 6px; font-weight: bold; margin-bottom: 5px; }
-        .bg-blue { background: #d2e3fc; color: #1967d2; }
+        /* 結果顯示 */
+        .result-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; border: 1px solid #e5e7eb; border-radius: 18px; margin-bottom: 12px; background: white; }
+        .result-item.best { border: 2.5px solid #10b981; background: #f0fdf4; }
+        .card-info h3 { margin: 0; font-size: 1rem; }
+        .card-info p { margin: 3px 0 0; font-size: 0.75rem; color: #6b7280; }
+        .val { font-size: 1.4rem; font-weight: 800; color: #111827; text-align: right; }
+        .best .val { color: #059669; }
+        .badge { font-size: 0.65rem; padding: 2px 6px; border-radius: 5px; color: white; font-weight: bold; margin-bottom: 4px; display: inline-block; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>🎯 2026 信用卡權益精算</h2>
-    <div class="subtitle">國泰 CUBE / 富邦 Open Possible / 聯邦吉鶴卡</div>
-
-    <div class="form-group">
-        <label>💰 消費金額 (TWD)</label>
-        <input type="number" id="amount" value="3000" inputmode="numeric">
+    <div class="header">
+        <h1>2026 錢包精算儀表板</h1>
+        <p style="color:#6b7280; font-size:0.8rem;">國泰 / 聯邦 / 台新 / LINE Bank</p>
     </div>
 
-    <div class="form-group">
-        <label>📍 消費場景 (2026 最新版)</label>
-        <select id="scenario">
-            <optgroup label="📡 電信/AI 工具 (富邦強項)">
-                <option value="FB_5G">台灣大哥大 5G 電信費</option>
-                <option value="FB_AI">指定 AI 工具 (ChatGPT/Gemini/Perplexity)</option>
-                <option value="FB_4G">台灣大哥大 4G / 其他電信</option>
-                <option value="FB_Taobao">淘寶 Taobao / 天貓網購</option>
-            </optgroup>
-            <optgroup label="🇯🇵 日本旅遊">
-                <option value="JP_ApplePay">日本 - Apple Pay (QUICPay)</option>
-                <option value="JP_Card">日本 - 實體卡刷卡</option>
-            </optgroup>
-            <optgroup label="🇰🇷 韓國與海外">
-                <option value="KR_Physical">韓國 - 實體店面</option>
-                <option value="Overseas_Online">海外 App 儲值 (如 T-money)</option>
-                <option value="Overseas_General">其他海外實體消費</option>
-            </optgroup>
-            <optgroup label="🇹🇼 國內日常">
-                <option value="TW_LinePay">LINE Pay 支付 (國內)</option>
-                <option value="TW_Dining">餐廳美食 / 百貨購物</option>
-                <option value="TW_Gas">加油 (中油直營/台塑)</option>
-                <option value="TW_General">一般消費 (儲值/稅費)</option>
-            </optgroup>
-        </select>
+    <div class="card-gallery">
+        <div class="card-preview" onclick="document.getElementById('in-cube').click()">
+            <img src="https://via.placeholder.com/150x90?text=CUBE" id="img-cube">
+            <input type="file" id="in-cube" hidden onchange="pv(this, 'img-cube')">
+            <span class="title" style="color:var(--cube-color)">國泰 CUBE</span>
+            <span class="memo">刷全支付、網購、百貨<br>記得每日切換方案</span>
+        </div>
+        <div class="card-preview" onclick="document.getElementById('in-ts').click()">
+            <img src="https://via.placeholder.com/150x90?text=Richart" id="img-ts">
+            <input type="file" id="in-ts" hidden onchange="pv(this, 'img-ts')">
+            <span class="title" style="color:var(--richart-color)">台新 Richart</span>
+            <span class="memo">加油 3.3%、機票航空、<br>台新Pay 3.8%</span>
+        </div>
+        <div class="card-preview" onclick="document.getElementById('in-jh').click()">
+            <img src="https://via.placeholder.com/150x90?text=JiHo" id="img-jh">
+            <input type="file" id="in-jh" hidden onchange="pv(this, 'img-jh')">
+            <span class="title" style="color:var(--jiho-color)">聯邦吉鶴卡</span>
+            <span class="memo">日本 Apple Pay 4%<br>國內保底一般 1%</span>
+        </div>
+        <div class="card-preview" onclick="document.getElementById('in-lb').click()">
+            <img src="https://via.placeholder.com/150x90?text=LINEBank" id="img-lb">
+            <input type="file" id="in-lb" hidden onchange="pv(this, 'img-lb')">
+            <span class="title" style="color:var(--linebank-color)">LINE Bank 快點卡</span>
+            <span class="memo">平日午餐 15% (超商)<br>週末 LINE Pay 4%</span>
+        </div>
     </div>
 
-    <div class="check-group">
-        <label class="checkbox-wrapper">
-            <input type="checkbox" id="fbThres" checked>
-            <span>⚡ 富邦 OP 卡本月已刷滿 $5,000 (啟動加碼)</span>
-        </label>
-        <label class="checkbox-wrapper" style="background: #e6fffa; border-color: #b2f2bb;">
-            <input type="checkbox" id="isNewbie">
-            <span>🎁 我是新戶 (享富邦首刷禮/加碼)</span>
-        </label>
+    <div class="main-box">
+        <div class="form-group">
+            <label>💰 消費金額 (TWD)</label>
+            <input type="number" id="amt" value="1000" inputmode="numeric">
+        </div>
+
+        <div class="form-group">
+            <label>📍 消費場景</label>
+            <select id="sce">
+                <option value="Gas">⛽ 加油站 (中油/台塑/全國)</option>
+                <option value="JP_AP">🇯🇵 日本 Apple Pay (QUICPay)</option>
+                <option value="Lunch">🍱 平日午餐 (11:00-14:00 超商)</option>
+                <option value="LP_Weekend">📲 LINE Pay (週五~週日)</option>
+                <option value="Pay_TS">📲 台新 Pay 支付</option>
+                <option value="PXPay">📲 全支付 (綁定國泰)</option>
+                <option value="Online">📦 國內網購 (蝦皮/Momo)</option>
+                <option value="Airline">✈️ 航空公司 / 買機票</option>
+                <option value="General">🏧 其他一般消費</option>
+            </select>
+        </div>
+
+        <div class="plan-select cube-border">
+            <label style="color:var(--cube-color)">🌲 國泰 CUBE 方案</label>
+            <select id="cbPlan">
+                <option value="Select">集精選 (中油/超商/全聯)</option>
+                <option value="Digital">玩數位 (網購/串流)</option>
+                <option value="Travel">趣旅行 (海外/交通)</option>
+                <option value="Japan">日本賞 (日本實體店面)</option>
+            </select>
+        </div>
+
+        <div class="plan-select ts-border">
+            <label style="color:var(--richart-color)">🐶 台新 Richart 方案</label>
+            <select id="tsPlan">
+                <option value="Daily">天天刷 (加油/交通/超商)</option>
+                <option value="Pay">Pay著刷 (LINE Pay/台新Pay)</option>
+                <option value="Travel">玩旅刷 (海外/訂房/機票)</option>
+            </select>
+        </div>
+
+        <button onclick="calc()">🚀 查看最佳刷卡推薦</button>
+
+        <div id="results" style="margin-top:25px;"></div>
     </div>
-
-    <div class="cube-box">
-        <span class="cube-title">🌲 國泰 CUBE 方案設定</span>
-        <select id="cubePlan">
-            <option value="Select">集精選 (台哥大/加油/全聯)</option>
-            <option value="Travel">趣旅行 (海外實體/國內交通)</option>
-            <option value="Payment">來支付 (LINE Pay 專用)</option>
-            <option value="Digital">玩數位 (網購/AI工具)</option>
-        </select>
-    </div>
-
-    <button onclick="calculate()">🚀 計算最佳回饋</button>
-
-    <div id="results" style="margin-top:25px;"></div>
 </div>
 
 <script>
-    function calculate() {
-        const amt = parseFloat(document.getElementById('amount').value);
-        const sce = document.getElementById('scenario').value;
-        const plan = document.getElementById('cubePlan').value;
-        const fbThres = document.getElementById('fbThres').checked;
-        const isNewbie = document.getElementById('isNewbie').checked;
-
-        let isForeign = sce.includes("JP") || sce.includes("KR") || sce.includes("Overseas") || sce === "FB_Taobao";
-        let fee = isForeign ? 0.015 : 0;
-        let res = [];
-
-        // --- 1. 富邦 Open Possible (2026/01/01 版) ---
-        let fbRate = 0.01; 
-        let fbNote = "一般消費 (1%)";
-        if (fbThres) {
-            if (sce === "FB_5G") { fbRate = 0.035; fbNote = "5G 電信加碼 (3.5%)"; }
-            else if (sce === "FB_4G") { fbRate = 0.02; fbNote = "4G 電信加碼 (2%)"; }
-            else if (sce === "FB_AI") { fbRate = 0.02; fbNote = "AI 工具指定回饋 (2%)"; }
-            else if (sce === "FB_Taobao") { fbRate = 0.02; fbNote = "淘寶/天貓加碼 (2%)"; }
-            else if (sce === "TW_Gas") { fbRate = 0.02; fbNote = "行車加油加碼 (2%)"; }
-            else if (isForeign) { fbRate = 0.02; fbNote = "海外一般加碼 (2%)"; }
+    function pv(i, id) {
+        if (i.files && i.files[0]) {
+            var r = new FileReader();
+            r.onload = e => document.getElementById(id).src = e.target.result;
+            r.readAsDataURL(i.files[0]);
         }
-        let fbProfit = Math.round(amt * (fbRate - fee));
-        if (isNewbie && amt >= 5000) fbProfit += 400; // 簡化首刷禮邏輯
-        res.push({ name: "富邦 Open Possible", val: fbProfit, note: fbNote, rate: fbRate });
+    }
 
-        // --- 2. 國泰 CUBE 卡 (2026 H1) ---
-        let cbRate = 0.003; 
-        let cbNote = "一般回饋 (0.3%)";
-        if (plan === "Select" && (sce === "FB_5G" || sce === "FB_4G" || sce === "TW_Gas")) { cbRate = 0.03; cbNote = "集精選 (3%)"; }
-        else if (plan === "Travel" && (sce.includes("Physical") || sce === "Overseas_General")) { cbRate = 0.03; cbNote = "趣旅行 (3%)"; }
-        else if (plan === "Payment" && sce === "TW_LinePay") { cbRate = 0.03; cbNote = "來支付 (3%)"; }
-        else if (plan === "Digital" && (sce === "FB_AI" || sce === "Overseas_Online")) { cbRate = 0.03; cbNote = "玩數位 (3%)"; }
-        
-        res.push({ name: "國泰 CUBE 卡", val: Math.round(amt * (cbRate - fee)), note: cbNote, rate: cbRate });
+    function calc() {
+        const a = parseFloat(document.getElementById('amt').value);
+        const s = document.getElementById('sce').value;
+        const cp = document.getElementById('cbPlan').value;
+        const tp = document.getElementById('tsPlan').value;
+        if (!a) return;
 
-        // --- 3. 聯邦吉鶴卡 (2026 H1) ---
-        let jhRate = 0.01; 
-        let jhNote = "國內一般 (1%)";
-        if (sce === "JP_ApplePay") { jhRate = 0.04; jhNote = "日本 ApplePay (4%)"; }
-        else if (sce === "JP_Card") { jhRate = 0.025; jhNote = "日本一般刷卡 (2.5%)"; }
-        res.push({ name: "聯邦吉鶴卡", val: Math.round(amt * (jhRate - fee)), note: jhNote, rate: jhRate });
+        let res = [];
+        let f = (s === "JP_AP") ? 0.015 : 0;
 
-        // 排序
+        // 1. 國泰 CUBE (2026)
+        let cr = 0.003; let cn = "一般 0.3%";
+        if (cp === "Select" && s === "Gas") { cr = 0.02; cn = "集精選 (中油直營 2%)"; }
+        else if (cp === "Digital" && s === "Online") { cr = 0.03; cn = "玩數位 (3%)"; }
+        else if (cp === "Travel" && s === "Airline") { cr = 0.03; cn = "趣旅行 (3%)"; }
+        else if (s === "PXPay") { cr = 0.07; cn = "全支付方案 (7% 限量)"; }
+        else if (cp === "Japan" && s === "JP_AP") { cr = 0.035; cn = "日本賞 (3.5%)"; }
+        res.push({ name: "國泰 CUBE 卡", color: "var(--cube-color)", val: Math.round(a*(cr-f)), note: cn });
+
+        // 2. 台新 Richart (2026) - 推薦作為第3家
+        let tr = 0.003; let tn = "一般 0.3%";
+        if (tp === "Daily" && s === "Gas") { tr = 0.033; tn = "天天刷 (加油 3.3%)"; }
+        else if (tp === "Pay" && s === "Pay_TS") { tr = 0.038; tn = "Pay著刷 (3.8%)"; }
+        else if (tp === "Travel" && s === "Airline") { tr = 0.033; tn = "玩旅刷 (3.3%)"; }
+        res.push({ name: "台新 Richart 卡", color: "var(--richart-color)", val: Math.round(a*(tr-f)), note: tn });
+
+        // 3. 聯邦吉鶴卡 (2026)
+        let jr = 0.01; let jn = "國內一般 1%";
+        if (s === "JP_AP") { jr = 0.04; jn = "日本 AP 4%"; }
+        res.push({ name: "聯邦吉鶴卡", color: "var(--jiho-color)", val: Math.round(a*(jr-f)), note: jn });
+
+        // 4. LINE Bank 快點卡
+        let lr = 0.005; let ln = "一般 0.5%";
+        if (s === "Lunch") { lr = 0.15; ln = "平日午餐 (15% 限量)"; }
+        else if (s === "LP_Weekend") { lr = 0.04; ln = "週末加碼 (4%)"; }
+        res.push({ name: "LINE Bank 快點卡", color: "var(--linebank-color)", val: Math.round(a*(lr-f)), note: ln });
+
         res.sort((a,b) => b.val - a.val);
-
         const div = document.getElementById('results');
         div.innerHTML = "";
         res.forEach((item, i) => {
-            const isBest = i === 0 && item.val > 0;
-            div.innerHTML += `
-                <div class="result-item ${isBest ? 'best' : ''}">
-                    <div>
-                        <span class="badge bg-blue">${(item.rate*100).toFixed(1)}% 回饋</span>
-                        <div class="card-name">${isBest ? '👑 ' : ''}${item.name}</div>
-                        <div class="card-note">${item.note}</div>
-                    </div>
-                    <div class="card-val">$${item.val}</div>
-                </div>`;
+            const isB = i === 0 && item.val > 0;
+            div.innerHTML += `<div class="result-item ${isB ? 'best' : ''}"><div class="card-info"><span class="badge" style="background:${item.color}">${item.name.split(" ")[0]}</span><h3>${item.name}</h3><p>${item.note}</p></div><div class="val">$${item.val}</div></div>`;
         });
     }
 </script>
