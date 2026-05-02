@@ -15,30 +15,12 @@
         .header { text-align: center; margin-bottom: 20px; }
         .tag { background: #cbd5e1; font-size: 0.7rem; padding: 2px 10px; border-radius: 10px; color: #475569; font-weight: bold; }
 
-        /* --- 卡片展示區 (修正無法顯示圖片的問題) --- */
+        /* 卡片展示區 */
         .card-gallery { display: flex; overflow-x: auto; gap: 12px; padding: 10px 0 20px 0; -webkit-overflow-scrolling: touch; }
-        
         .card-preview { flex: 0 0 140px; background: white; border-radius: 15px; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; position: relative; cursor: pointer; }
-        
-        /* 卡片照片容器：如果沒圖片，會顯示 CSS 背景色與文字 */
-        .card-img-container {
-            width: 100%; height: 80px;
-            border-radius: 10px; margin-bottom: 8px;
-            overflow: hidden; display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: bold; font-size: 1.1rem;
-            position: relative;
-            border: 1px solid #eee;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
-        }
-        
-        /* 實際顯示的圖片 (設為 0.1s 漸變，更流暢) */
-        .card-img-container img {
-            width: 100%; height: 100%;
-            object-fit: contain; background: transparent;
-            transition: opacity 0.1s;
-        }
+        .card-img-container { width: 100%; height: 80px; border-radius: 10px; margin-bottom: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.1rem; border: 1px solid #eee; box-shadow: inset 0 0 10px rgba(0,0,0,0.1); }
+        .card-img-container img { width: 100%; height: 100%; object-fit: contain; background: transparent; transition: opacity 0.1s; }
 
-        /* 預設的 CSS 卡片背景色 (確保看不到圖片時仍有卡片感) */
         .bg-cube { background-color: var(--cube-color); }
         .bg-richart { background-color: var(--richart-color); }
         .bg-jiho { background-color: var(--jiho-color); }
@@ -47,14 +29,12 @@
 
         .card-preview .title { font-weight: 800; font-size: 0.8rem; display: block; margin-bottom: 2px; }
         .card-preview .memo { font-size: 0.65rem; color: #94a3b8; display: block; line-height: 1.2; min-height: 30px; }
-        .up-hint { font-size: 0.5rem; color: #aaa; position: absolute; top: 5px; right: 8px; }
 
         /* 計算主體 */
         .main-box { background: white; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 6px; font-weight: bold; font-size: 0.9rem; }
         input, select { width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 12px; font-size: 16px; box-sizing: border-box; background: #fff; }
-        
         .plan-select { padding: 12px; border-radius: 12px; margin-bottom: 10px; border-left: 5px solid #ccc; background: #f8fafc; font-size: 0.85rem; }
         .cube-border { border-left-color: var(--cube-color); }
         .ts-border { border-left-color: var(--richart-color); }
@@ -63,6 +43,7 @@
         button:active { background: #334155; transform: scale(0.98); }
 
         /* 結果顯示 */
+        #results { margin-top: 20px; }
         .result-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #f1f5f9; border-radius: 18px; margin-bottom: 10px; background: white; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .result-item.best { border: 2.5px solid #10b981; background: #f0fdf4; box-shadow: 0 4px 12px rgba(16,185,129,0.08); }
@@ -83,49 +64,31 @@
 
     <div class="card-gallery">
         <div class="card-preview" onclick="document.getElementById('up-cube').click()">
-            <div class="card-img-container bg-cube">
-                <span>CUBE</span> <img src="" id="img-cube" style="opacity:0;" onerror="this.style.opacity=0;">
-            </div>
+            <div class="card-img-container bg-cube"><span>CUBE</span><img src="" id="img-cube" style="opacity:0;"></div>
             <input type="file" id="up-cube" hidden onchange="pv(this, 'img-cube')">
             <span class="title" style="color:var(--cube-color)">國泰 CUBE</span>
             <span class="memo">全支付 7%<br>方案 3%</span>
         </div>
-        
         <div class="card-preview" onclick="document.getElementById('up-richart').click()">
-            <div class="card-img-container bg-richart">
-                <span>Richart</span>
-                <img src="" id="img-richart" style="opacity:0;" onerror="this.style.opacity=0;">
-            </div>
+            <div class="card-img-container bg-richart"><span>Richart</span><img src="" id="img-richart" style="opacity:0;"></div>
             <input type="file" id="up-richart" hidden onchange="pv(this, 'img-richart')">
             <span class="title" style="color:var(--richart-color)">台新 Richart</span>
             <span class="memo">台新Pay 3.8%<br>加油 3.3%</span>
         </div>
-        
         <div class="card-preview" onclick="document.getElementById('up-jiho').click()">
-            <div class="card-img-container bg-jiho">
-                <span>吉鶴</span>
-                <img src="" id="img-jiho" style="opacity:0;" onerror="this.style.opacity=0;">
-            </div>
+            <div class="card-img-container bg-jiho"><span>吉鶴</span><img src="" id="img-jiho" style="opacity:0;"></div>
             <input type="file" id="up-jiho" hidden onchange="pv(this, 'img-jiho')">
             <span class="title" style="color:var(--jiho-color)">聯邦吉鶴</span>
             <span class="memo">日本 AP 4%<br>國內保底 1%</span>
         </div>
-        
         <div class="card-preview" onclick="document.getElementById('up-lb').click()">
-            <div class="card-img-container bg-linebank">
-                <span>LINEBank</span>
-                <img src="" id="img-lb" style="opacity:0;" onerror="this.style.opacity=0;">
-            </div>
+            <div class="card-img-container bg-linebank"><span>LINEBank</span><img src="" id="img-lb" style="opacity:0;"></div>
             <input type="file" id="up-lb" hidden onchange="pv(this, 'img-lb')">
             <span class="title" style="color:var(--linebank-color)">LINE Bank</span>
             <span class="memo">午餐 15%<br>週末 4%</span>
         </div>
-        
         <div class="card-preview" onclick="document.getElementById('up-pi').click()">
-            <div class="card-img-container bg-pi">
-                <span>Pi 簽帳</span>
-                <img src="" id="img-pi" style="opacity:0;" onerror="this.style.opacity=0;">
-            </div>
+            <div class="card-img-container bg-pi"><span>Pi 簽帳</span><img src="" id="img-pi" style="opacity:0;"></div>
             <input type="file" id="up-pi" hidden onchange="pv(this, 'img-pi')">
             <span class="title" style="color:var(--esun-color)">玉山 Pi 簽帳</span>
             <span class="memo">Pi 錢包 3%<br>eWallet 1.2%</span>
@@ -139,7 +102,7 @@
         </div>
 
         <div class="form-group">
-            <label>📍 支付工具 & 場景 (V+M+J 全能版)</label>
+            <label>📍 支付工具 & 場景</label>
             <select id="payTool">
                 <option value="PXPay">📲 全支付 (綁定國泰方案 7%)</option>
                 <option value="LP_WE">📲 LINE Pay (週五~週日 4%)</option>
@@ -149,7 +112,7 @@
                 <option value="eWallet">📲 玉山 e Wallet (掃碼支付 1.2%)</option>
                 <option value="Japan_AP">🇯🇵 日本 Apple Pay 感應 (4%-5%)</option>
                 <option value="Gas">⛽ 加油 (實體卡/中油Pay 3.3%)</option>
-                <option value="Lunch">🍱 平日午餐 (11-14 超商快點吃 15%)</option>
+                <option value="Lunch">🍱 平日午餐 (11-14 超商 15%)</option>
             </select>
         </div>
 
@@ -173,28 +136,24 @@
         </div>
 
         <button onclick="calc()">✨ 計算 2026/05 最強神卡</button>
-
-        <div id="results" style="margin-top:20px;"></div>
+        <div id="results"></div>
     </div>
 </div>
 
 <script>
-    // 預覽上傳圖片的功能
     function pv(input, imgId) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
             reader.onload = function(e) {
                 const img = document.getElementById(imgId);
                 img.src = e.target.result;
-                img.style.opacity = 1; // 顯示圖片
-                // 隱藏替代文字
+                img.style.opacity = 1;
                 input.previousElementSibling.firstElementChild.style.display = 'none';
             };
             reader.readAsDataURL(input.files[0]);
         }
     }
 
-    // 核心計算邏輯 (校正至 2026/05)
     function calc() {
         const a = parseFloat(document.getElementById('amt').value);
         const pt = document.getElementById('payTool').value;
@@ -203,17 +162,48 @@
         if (!a) return;
 
         let res = [];
-        let f = (pt === "Japan_AP") ? 0.015 : 0; // 海外手續費
+        let f = (pt === "Japan_AP") ? 0.015 : 0;
 
-        // 1. 國泰 CUBE (2026/05 版)
-        let cr = 0.003; let cn = "一般 0.3% (無腦刷會很慘)";
-        if (pt === "PXPay") { cr = 0.07; cn = "全支付專屬 (7% 入帳即給全點)"; }
-        else if (cp === "Japan" && pt === "Japan_AP") { cr = 0.035; cn = "日本賞 3.5% (無上限)"; }
-        else if (cp === "Digital" && (pt === "LP_WD" || pt === "LP_WE")) { cr = 0.03; cn = "玩數位 (3% LINE Pay)"; }
+        // 1. 國泰 CUBE
+        let cr = 0.003; let cn = "一般 0.3%";
+        if (pt === "PXPay") { cr = 0.07; cn = "全支付專屬 (7%)"; }
+        else if (cp === "Japan" && pt === "Japan_AP") { cr = 0.035; cn = "日本賞 3.5%"; }
+        else if (cp === "Digital" && (pt === "LP_WD" || pt === "LP_WE")) { cr = 0.03; cn = "玩數位 (3%)"; }
         else if (cp === "Select" && pt === "Gas") { cr = 0.02; cn = "集精選 (中油 2%)"; }
         res.push({ name: "國泰 CUBE 卡", color: "var(--cube-color)", val: Math.round(a*(cr-f)), note: cn });
 
-        // 2. 台新 Richart (2026/05 版)
+        // 2. 台新 Richart
         let tr = 0.003; let tn = "一般 0.3%";
-        if (pt === "TS_Pay") { tr = 0.038; tn = "台新 Pay (母親節 3.8% 無腦刷)"; }
-        else if (tp === "Pay" && (pt === "LP_WD" || pt
+        if (pt === "TS_Pay") { tr = 0.038; tn = "台新 Pay (3.8%)"; }
+        else if (tp === "Pay" && (pt === "LP_WD" || pt === "LP_WE")) { tr = 0.023; tn = "LINE Pay (2.3%)"; }
+        else if (tp === "Daily" && pt === "Gas") { tr = 0.033; tn = "天天刷 (加油 3.3%)"; }
+        res.push({ name: "台新 Richart 卡", color: "var(--richart-color)", val: Math.round(a*(tr-f)), note: tn });
+
+        // 3. 聯邦吉鶴卡
+        let jr = 0.01; let jn = "國內 1% 保底";
+        if (pt === "Japan_AP") { jr = 0.04; jn = "日本 AP 4%"; }
+        res.push({ name: "聯邦吉鶴卡", color: "var(--jiho-color)", val: Math.round(a*(jr-f)), note: jn });
+
+        // 4. LINE Bank 快點卡
+        let lr = 0.005; let ln = "一般 0.5%";
+        if (pt === "Lunch") { lr = 0.15; ln = "平日午餐 (15%)"; }
+        else if (pt === "LP_WE") { lr = 0.04; ln = "週末加碼 (4%)"; }
+        res.push({ name: "LINE Bank 快點卡", color: "var(--linebank-color)", val: Math.round(a*(lr-f)), note: ln });
+
+        // 5. 玉山 Pi 簽帳金融卡
+        let pr = 0.01; let pn = "一般 1% P幣";
+        if (pt === "Pi_Pay") { pr = 0.03; pn = "Pi 錢包 (3%)"; }
+        else if (pt === "eWallet") { pr = 0.012; pn = "玉山 Wallet (1.2%)"; }
+        res.push({ name: "玉山 Pi 簽帳卡", color: "var(--esun-color)", val: Math.round(a*(pr-f)), note: pn });
+
+        res.sort((a,b) => b.val - a.val);
+        const div = document.getElementById('results');
+        div.innerHTML = "";
+        res.forEach((item, i) => {
+            const isBest = i === 0 && item.val > 0;
+            div.innerHTML += `<div class="result-item ${isBest ? 'best' : ''}"><div class="card-info"><span class="badge" style="background:${item.color}">${item.name.split(" ")[0]}</span><h3>${item.name}</h3><p>${item.note}</p></div><div class="val">$${item.val}</div></div>`;
+        });
+    }
+</script>
+</body>
+</html>
