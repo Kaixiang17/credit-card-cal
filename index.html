@@ -3,80 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 我的錢包儀表板</title>
+    <title>2026 凱翔的錢包儀表板</title>
     <style>
         :root {
             --cube-color: #0087dc; --richart-color: #e11d48;
             --jiho-color: #4b5563; --linebank-color: #00c300;
+            --esun-color: #009999;
         }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif; background-color: #f3f4f6; margin: 0; padding: 20px 10px; color: #1f2937; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif; background-color: #f1f5f9; margin: 0; padding: 20px 10px; color: #334155; }
         .container { max-width: 600px; margin: 0 auto; }
         .header { text-align: center; margin-bottom: 20px; }
-        
-        /* 卡片圖鑑區 - 4張精銳 */
-        .card-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
-        .card-preview { background: white; border-radius: 18px; padding: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; cursor: pointer; transition: 0.2s; border: 1px solid transparent; }
-        .card-preview:hover { transform: translateY(-3px); border-color: #ddd; }
-        .card-preview img { width: 100%; height: 90px; object-fit: contain; background: #f9fafb; border-radius: 12px; margin-bottom: 8px; border: 1px solid #eee; }
-        .card-preview .title { font-weight: bold; font-size: 0.85rem; display: block; margin-bottom: 4px; }
-        .card-preview .memo { font-size: 0.7rem; color: #6b7280; display: block; line-height: 1.3; min-height: 36px; }
+        .tag { background: #cbd5e1; font-size: 0.7rem; padding: 2px 10px; border-radius: 10px; color: #475569; font-weight: bold; }
 
-        /* 計算區 */
-        .main-box { background: white; padding: 25px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-        .form-group { margin-bottom: 18px; }
+        /* 卡片展示區 - 5張卡 */
+        .card-gallery { display: flex; overflow-x: auto; gap: 12px; padding: 10px 0 20px 0; -webkit-overflow-scrolling: touch; }
+        .card-preview { flex: 0 0 140px; background: white; border-radius: 15px; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; }
+        .card-preview img { width: 100%; height: 70px; object-fit: contain; background: #f8fafc; border-radius: 10px; margin-bottom: 5px; }
+        .card-preview .title { font-weight: bold; font-size: 0.75rem; display: block; margin-bottom: 2px; }
+        .card-preview .memo { font-size: 0.65rem; color: #94a3b8; display: block; line-height: 1.2; }
+
+        /* 計算主體 */
+        .main-box { background: white; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 6px; font-weight: bold; font-size: 0.9rem; }
-        input, select { width: 100%; padding: 14px; border: 1px solid #d1d5db; border-radius: 12px; font-size: 16px; box-sizing: border-box; background: #fff; }
+        input, select { width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 12px; font-size: 16px; box-sizing: border-box; background: #fff; }
         
-        .plan-select { padding: 12px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid #ccc; background: #f9fafb; }
+        .plan-select { padding: 12px; border-radius: 12px; margin-bottom: 10px; border-left: 5px solid #ccc; background: #f8fafc; font-size: 0.85rem; }
         .cube-border { border-left-color: var(--cube-color); }
         .ts-border { border-left-color: var(--richart-color); }
 
-        button { width: 100%; padding: 16px; background: #111827; color: white; border: none; border-radius: 14px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; }
-        button:active { transform: scale(0.98); }
+        button { width: 100%; padding: 16px; background: #0f172a; color: white; border: none; border-radius: 15px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 10px; }
 
         /* 結果顯示 */
-        .result-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; border: 1px solid #e5e7eb; border-radius: 18px; margin-bottom: 12px; background: white; }
-        .result-item.best { border: 2.5px solid #10b981; background: #f0fdf4; }
-        .card-info h3 { margin: 0; font-size: 1rem; }
-        .card-info p { margin: 3px 0 0; font-size: 0.75rem; color: #6b7280; }
-        .val { font-size: 1.4rem; font-weight: 800; color: #111827; text-align: right; }
+        .result-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #f1f5f9; border-radius: 18px; margin-bottom: 10px; background: white; }
+        .result-item.best { border: 2px solid #10b981; background: #f0fdf4; }
+        .card-info h3 { margin: 0; font-size: 0.95rem; }
+        .card-info p { margin: 2px 0 0; font-size: 0.7rem; color: #64748b; }
+        .val { font-size: 1.3rem; font-weight: 800; text-align: right; }
         .best .val { color: #059669; }
-        .badge { font-size: 0.65rem; padding: 2px 6px; border-radius: 5px; color: white; font-weight: bold; margin-bottom: 4px; display: inline-block; }
+        .badge { font-size: 0.6rem; padding: 2px 5px; border-radius: 4px; color: white; font-weight: bold; margin-bottom: 3px; display: inline-block; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>2026 錢包精算儀表板</h1>
-        <p style="color:#6b7280; font-size:0.8rem;">國泰 / 聯邦 / 台新 / LINE Bank</p>
+        <h1>2026/05 錢包權益儀表板</h1>
+        <span class="tag">五大銀行 x 五大支付 連動版</span>
     </div>
 
     <div class="card-gallery">
-        <div class="card-preview" onclick="document.getElementById('in-cube').click()">
-            <img src="https://via.placeholder.com/150x90?text=CUBE" id="img-cube">
-            <input type="file" id="in-cube" hidden onchange="pv(this, 'img-cube')">
-            <span class="title" style="color:var(--cube-color)">國泰 CUBE</span>
-            <span class="memo">刷全支付、網購、百貨<br>記得每日切換方案</span>
-        </div>
-        <div class="card-preview" onclick="document.getElementById('in-ts').click()">
-            <img src="https://via.placeholder.com/150x90?text=Richart" id="img-ts">
-            <input type="file" id="in-ts" hidden onchange="pv(this, 'img-ts')">
-            <span class="title" style="color:var(--richart-color)">台新 Richart</span>
-            <span class="memo">加油 3.3%、機票航空、<br>台新Pay 3.8%</span>
-        </div>
-        <div class="card-preview" onclick="document.getElementById('in-jh').click()">
-            <img src="https://via.placeholder.com/150x90?text=JiHo" id="img-jh">
-            <input type="file" id="in-jh" hidden onchange="pv(this, 'img-jh')">
-            <span class="title" style="color:var(--jiho-color)">聯邦吉鶴卡</span>
-            <span class="memo">日本 Apple Pay 4%<br>國內保底一般 1%</span>
-        </div>
-        <div class="card-preview" onclick="document.getElementById('in-lb').click()">
-            <img src="https://via.placeholder.com/150x90?text=LINEBank" id="img-lb">
-            <input type="file" id="in-lb" hidden onchange="pv(this, 'img-lb')">
-            <span class="title" style="color:var(--linebank-color)">LINE Bank 快點卡</span>
-            <span class="memo">平日午餐 15% (超商)<br>週末 LINE Pay 4%</span>
-        </div>
+        <div class="card-preview"><img src="https://via.placeholder.com/120x70?text=CUBE"><span class="title" style="color:var(--cube-color)">國泰 CUBE</span><span class="memo">全支付 7%<br>方案 3%</span></div>
+        <div class="card-preview"><img src="https://via.placeholder.com/120x70?text=Richart"><span class="title" style="color:var(--richart-color)">台新 Richart</span><span class="memo">台新Pay 3.8%<br>加油 3.3%</span></div>
+        <div class="card-preview"><img src="https://via.placeholder.com/120x70?text=JiHo"><span class="title" style="color:var(--jiho-color)">聯邦吉鶴</span><span class="memo">日本 AP 4%<br>保底 1%</span></div>
+        <div class="card-preview"><img src="https://via.placeholder.com/120x70?text=LINEBank"><span class="title" style="color:var(--linebank-color)">LINE Bank</span><span class="memo">午餐 15%<br>週末 LP 4%</span></div>
+        <div class="card-preview"><img src="https://via.placeholder.com/120x70?text=E.SUN+Pi"><span class="title" style="color:var(--esun-color)">玉山 Pi 簽帳</span><span class="memo">Pi 錢包 3%<br>eWallet 1%</span></div>
     </div>
 
     <div class="main-box">
@@ -86,97 +67,94 @@
         </div>
 
         <div class="form-group">
-            <label>📍 消費場景</label>
-            <select id="sce">
-                <option value="Gas">⛽ 加油站 (中油/台塑/全國)</option>
-                <option value="JP_AP">🇯🇵 日本 Apple Pay (QUICPay)</option>
-                <option value="Lunch">🍱 平日午餐 (11:00-14:00 超商)</option>
-                <option value="LP_Weekend">📲 LINE Pay (週五~週日)</option>
-                <option value="Pay_TS">📲 台新 Pay 支付</option>
-                <option value="PXPay">📲 全支付 (綁定國泰)</option>
-                <option value="Online">📦 國內網購 (蝦皮/Momo)</option>
-                <option value="Airline">✈️ 航空公司 / 買機票</option>
-                <option value="General">🏧 其他一般消費</option>
+            <label>支付工具 & 場景</label>
+            <select id="payTool">
+                <option value="PXPay">📲 全支付 (綁定國泰方案)</option>
+                <option value="LP_WE">📲 LINE Pay (週五~週日)</option>
+                <option value="LP_WD">📲 LINE Pay (平日)</option>
+                <option value="TS_Pay">📲 台新 Pay (指定通路)</option>
+                <option value="Pi_Pay">📲 Pi 錢包 APP (綁玉山Pi卡)</option>
+                <option value="eWallet">📲 玉山 e Wallet (掃碼支付)</option>
+                <option value="Japan_AP">🇯🇵 日本 Apple Pay</option>
+                <option value="Gas">⛽ 加油站 (實體刷卡/中油Pay)</option>
+                <option value="Lunch">🍱 平日午餐 (11-14 超商)</option>
             </select>
         </div>
 
         <div class="plan-select cube-border">
-            <label style="color:var(--cube-color)">🌲 國泰 CUBE 方案</label>
+            <label style="color:var(--cube-color)">國泰 CUBE 方案</label>
             <select id="cbPlan">
-                <option value="Select">集精選 (中油/超商/全聯)</option>
-                <option value="Digital">玩數位 (網購/串流)</option>
-                <option value="Travel">趣旅行 (海外/交通)</option>
-                <option value="Japan">日本賞 (日本實體店面)</option>
+                <option value="Japan">日本賞 (3.5%)</option>
+                <option value="Digital">玩數位 (網購 3%)</option>
+                <option value="Travel">趣旅行 (航空 3%)</option>
+                <option value="Select">集精選 (中油 2%)</option>
             </select>
         </div>
 
         <div class="plan-select ts-border">
-            <label style="color:var(--richart-color)">🐶 台新 Richart 方案</label>
+            <label style="color:var(--richart-color)">台新 Richart 方案 (預計)</label>
             <select id="tsPlan">
-                <option value="Daily">天天刷 (加油/交通/超商)</option>
+                <option value="Daily">天天刷 (加油 3.3%)</option>
                 <option value="Pay">Pay著刷 (LINE Pay/台新Pay)</option>
-                <option value="Travel">玩旅刷 (海外/訂房/機票)</option>
+                <option value="Travel">玩旅刷 (海外/機票)</option>
             </select>
         </div>
 
-        <button onclick="calc()">🚀 查看最佳刷卡推薦</button>
+        <button onclick="calc()">🚀 計算 2026/05 最強回饋</button>
 
-        <div id="results" style="margin-top:25px;"></div>
+        <div id="results" style="margin-top:20px;"></div>
     </div>
 </div>
 
 <script>
-    function pv(i, id) {
-        if (i.files && i.files[0]) {
-            var r = new FileReader();
-            r.onload = e => document.getElementById(id).src = e.target.result;
-            r.readAsDataURL(i.files[0]);
-        }
-    }
-
     function calc() {
         const a = parseFloat(document.getElementById('amt').value);
-        const s = document.getElementById('sce').value;
+        const pt = document.getElementById('payTool').value;
         const cp = document.getElementById('cbPlan').value;
         const tp = document.getElementById('tsPlan').value;
         if (!a) return;
 
         let res = [];
-        let f = (s === "JP_AP") ? 0.015 : 0;
+        let f = (pt === "Japan_AP") ? 0.015 : 0;
 
-        // 1. 國泰 CUBE (2026)
+        // 1. 國泰 CUBE
         let cr = 0.003; let cn = "一般 0.3%";
-        if (cp === "Select" && s === "Gas") { cr = 0.02; cn = "集精選 (中油直營 2%)"; }
-        else if (cp === "Digital" && s === "Online") { cr = 0.03; cn = "玩數位 (3%)"; }
-        else if (cp === "Travel" && s === "Airline") { cr = 0.03; cn = "趣旅行 (3%)"; }
-        else if (s === "PXPay") { cr = 0.07; cn = "全支付方案 (7% 限量)"; }
-        else if (cp === "Japan" && s === "JP_AP") { cr = 0.035; cn = "日本賞 (3.5%)"; }
+        if (pt === "PXPay") { cr = 0.07; cn = "全支付專屬 (7%)"; }
+        else if (cp === "Japan" && pt === "Japan_AP") { cr = 0.035; cn = "日本賞 3.5%"; }
+        else if (cp === "Digital" && (pt === "LP_WD" || pt === "LP_WE")) { cr = 0.03; cn = "玩數位 (3% 需切方案)"; }
+        else if (cp === "Select" && pt === "Gas") { cr = 0.02; cn = "集精選 (中油 2%)"; }
         res.push({ name: "國泰 CUBE 卡", color: "var(--cube-color)", val: Math.round(a*(cr-f)), note: cn });
 
-        // 2. 台新 Richart (2026) - 推薦作為第3家
+        // 2. 台新 Richart
         let tr = 0.003; let tn = "一般 0.3%";
-        if (tp === "Daily" && s === "Gas") { tr = 0.033; tn = "天天刷 (加油 3.3%)"; }
-        else if (tp === "Pay" && s === "Pay_TS") { tr = 0.038; tn = "Pay著刷 (3.8%)"; }
-        else if (tp === "Travel" && s === "Airline") { tr = 0.033; tn = "玩旅刷 (3.3%)"; }
+        if (pt === "TS_Pay") { tr = 0.038; tn = "台新 Pay (3.8%)"; }
+        else if (tp === "Pay" && (pt === "LP_WD" || pt === "LP_WE")) { tr = 0.023; tn = "LINE Pay (2.3%)"; }
+        else if (tp === "Daily" && pt === "Gas") { tr = 0.033; tn = "天天刷 (加油 3.3%)"; }
         res.push({ name: "台新 Richart 卡", color: "var(--richart-color)", val: Math.round(a*(tr-f)), note: tn });
 
-        // 3. 聯邦吉鶴卡 (2026)
-        let jr = 0.01; let jn = "國內一般 1%";
-        if (s === "JP_AP") { jr = 0.04; jn = "日本 AP 4%"; }
+        // 3. 聯邦吉鶴卡
+        let jr = 0.01; let jn = "國內 1% 保底";
+        if (pt === "Japan_AP") { jr = 0.04; jn = "日本 AP 4%"; }
         res.push({ name: "聯邦吉鶴卡", color: "var(--jiho-color)", val: Math.round(a*(jr-f)), note: jn });
 
         // 4. LINE Bank 快點卡
         let lr = 0.005; let ln = "一般 0.5%";
-        if (s === "Lunch") { lr = 0.15; ln = "平日午餐 (15% 限量)"; }
-        else if (s === "LP_Weekend") { lr = 0.04; ln = "週末加碼 (4%)"; }
+        if (pt === "Lunch") { lr = 0.15; ln = "平日午餐 (15% 限量)"; }
+        else if (pt === "LP_WE") { lr = 0.04; ln = "週末加碼 (4%)"; }
         res.push({ name: "LINE Bank 快點卡", color: "var(--linebank-color)", val: Math.round(a*(lr-f)), note: ln });
+
+        // 5. 玉山 Pi 簽帳金融卡 (新增)
+        let pr = 0.01; let pn = "一般 1% P幣";
+        if (pt === "Pi_Pay") { pr = 0.03; pn = "Pi 錢包加碼 (3%)"; }
+        else if (pt === "eWallet") { pr = 0.012; pn = "玉山 Wallet (1.2%)"; }
+        res.push({ name: "玉山 Pi 簽帳卡", color: "var(--esun-color)", val: Math.round(a*(pr-f)), note: pn });
 
         res.sort((a,b) => b.val - a.val);
         const div = document.getElementById('results');
         div.innerHTML = "";
         res.forEach((item, i) => {
             const isB = i === 0 && item.val > 0;
-            div.innerHTML += `<div class="result-item ${isB ? 'best' : ''}"><div class="card-info"><span class="badge" style="background:${item.color}">${item.name.split(" ")[0]}</span><h3>${item.name}</h3><p>${item.note}</p></div><div class="val">$${item.val}</div></div>`;
+            div.innerHTML += `<div class="result-item ${isB ? 'best' : ''}"><div><span class="badge" style="background:${item.color}">${item.name.split(" ")[0]}</span><h3>${item.name}</h3><p>${item.note}</p></div><div class="val">$${item.val}</div></div>`;
         });
     }
 </script>
